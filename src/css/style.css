@@ -1,0 +1,23 @@
+body {
+  font-family: sans-serif;
+}
+
+button {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  bottom: 40px;
+  right: 40px;
+  font-size: 20px;
+  padding: 10px;
+  border: none;
+  outline: none;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #E3C8A0;
+  border: 4px solid #333;
+  cursor: pointer;
+}
