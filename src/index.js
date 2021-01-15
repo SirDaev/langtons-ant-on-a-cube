@@ -4,19 +4,26 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 let camera, mesh, renderer, scene, stats;
 let color = new THREE.Color(0xE3C8A0);
-let currentSide = 1;
+let current = {
+  direction: {
+    relative: "r"
+  },
+  relativePosition: 12,
+  side: 0
+};
 let isRunning = false;
 let lastTime = 0;
 let sides = [];
+let sideStates = [
+  [],[],[],[],[],[]
+];
 
-const direction = "l";
 const numberOfSides = 6;
 const offset = 2;
-const sideLength = 100;
+const sideLength = 5;
 const sLsQ = sideLength*sideLength;
-const startPosition = 5050;
 const tileSize = 20;
-const timeBetweenMoves = 250;
+const timeBetweenMoves = 50;
 
 init();
 animate();
@@ -29,15 +36,8 @@ function init() {
 
   scene = new THREE.Scene();
 
+  // Create mesh of planes per side
   for (let z=0; z<numberOfSides; z++) {
-
-    const light1 = new THREE.HemisphereLight( 0xffffff, 0x000088 );
-    light1.position.set( - 1, 1.5, 1 );
-    scene.add( light1 );
-
-    const light2 = new THREE.HemisphereLight( 0xffffff, 0x880000, 0.5 );
-    light2.position.set( - 1, - 1.5, - 1 );
-    scene.add( light2 );
 
     const geometry = new THREE.PlaneBufferGeometry( tileSize,tileSize,1,1 );
     const material = new THREE.MeshBasicMaterial( {color: color });
@@ -104,11 +104,14 @@ function init() {
     sides.push( mesh );
   }
 
+  // Add 6 sides to the scene
   for(i=0; i<sides.length; i++) {
     scene.add(sides[i]);
   }
 
-  sides[0].setColorAt( startPosition, color.setHex( 0x333333 ) );
+  // Place the ant and turn its square 'on'
+  sides[0].setColorAt( current.relativePosition, color.setHex( 0x333333 ) );
+  sideStates[0].push(current.relativePosition);
 
   renderer = new THREE.WebGLRenderer( { antialias: true } );
   renderer.setClearColor( 0xeeeeee );
@@ -135,19 +138,7 @@ function animate(now) {
   if(!lastTime || now - lastTime >= timeBetweenMoves) {
     lastTime = now;
     if(isRunning) {
-
-      // Determine new color of existing tile
-      console.log(sides[0]);
-      
-      sides[0].setColorAt( 5051, color.setHex( Math.random() * 0xffffff ) );
-      sides[0].instanceColor.needsUpdate = true;
-
-
-
-
-
-
-
+      advance();
     }
   }
   requestAnimationFrame( animate );
@@ -161,4 +152,179 @@ function render() {
 
 function start() {
   isRunning = !isRunning;
+}
+
+function advance() {
+  let nextPosition = determineNextPosition();
+
+  // Update the current square
+  if(arrayContains(sideStates[current.side],current.relativePosition).contains) {
+    sides[current.side].setColorAt( current.relativePosition, color.setHex( 0x9E7A44 ) );
+  } else {
+    sides[current.side].setColorAt( current.relativePosition, color.setHex( 0xE3C8A0 ) );
+  }
+  sides[current.side].instanceColor.needsUpdate = true;
+
+  // Move the ant
+  sides[nextPosition.side].setColorAt( nextPosition.position, color.setHex( 0x333333 ) );
+  sides[nextPosition.side].instanceColor.needsUpdate = true;
+
+  // Update the direction
+  current = {
+    direction: {
+      relative: determineNextDirection(nextPosition)
+    },
+    relativePosition: nextPosition.position,
+    side: nextPosition.side
+  };
+}
+
+function determineNextPosition() {
+	let nextPosition = {
+    side: current.side,
+    position: current.relativePosition,
+    direction: current.direction.relative
+  }
+  console.log(nextPosition);
+	
+	if(current.direction.relative === "r") {
+		const sidesMap = [
+			{nextSide: 2, nextDirection: 'r', nextRelativePosition: (current.relativePosition - (sideLength-1))},
+			{nextSide: 3, nextDirection: 'r', nextRelativePosition: (current.relativePosition - (sideLength-1))},
+			{nextSide: 4, nextDirection: 'r', nextRelativePosition: (current.relativePosition - (sideLength-1))},
+			{nextSide: 1, nextDirection: 'r', nextRelativePosition: (current.relativePosition - (sideLength-1))},
+			{nextSide: 2, nextDirection: 'd', nextRelativePosition: (sideLength - ((current.relativePosition/sideLength)-1))},
+			{nextSide: 2, nextDirection: 'u', nextRelativePosition: ((sideLength*sideLength) - (sideLength - (current.relativePosition/sideLength)))}
+		]
+		
+		if(current.relativePosition % sideLength !== 0) {
+			nextPosition.position = current.relativePosition+1;
+		} else {
+			let currentSideMap = sidesMap[current.side];
+			
+			nextPosition = {
+        side: currentSideMap.nextSide,
+        position: currentSideMap.nextRelativePosition,
+        direction: currentSideMap.nextDirection
+      }
+		}
+	}
+	
+	if(current.direction.relative === "l") {
+		const sidesMap = [
+			{nextSide: 4, nextDirection: 'l', nextRelativePosition: (current.relativePosition - 1 + sideLength)},
+			{nextSide: 1, nextDirection: 'l', nextRelativePosition: (current.relativePosition - 1 + sideLength)},
+			{nextSide: 2, nextDirection: 'l', nextRelativePosition: (current.relativePosition - 1 + sideLength)},
+			{nextSide: 3, nextDirection: 'l', nextRelativePosition: (current.relativePosition - 1 + sideLength)},
+			{nextSide: 4, nextDirection: 'd', nextRelativePosition: (((current.relativePosition-1)/sideLength)+1)},
+			{nextSide: 4, nextDirection: 'u', nextRelativePosition: ((sideLength*sideLength)-((current.relativePosition-1)/sideLength))}
+		]
+		
+		if(current.relativePosition % sideLength !== 1) {
+			nextPosition.position = current.relativePosition-1;
+		} else {
+			let currentSideMap = sidesMap[current.side];
+			nextPosition = {
+        side: currentSideMap.nextSide,
+        position: currentSideMap.nextRelativePosition,
+        direction: currentSideMap.nextDirection
+      }
+		}
+	}
+	
+	if(current.direction.relative === "u") {
+		const sidesMap = [
+			{nextSide: 5, nextDirection: 'u', nextRelativePosition: (((sideLength*sideLength)-sideLength)+current.relativePosition)},
+			{nextSide: 5, nextDirection: 'l', nextRelativePosition: ((sideLength*sideLength)-(sideLength*(current.relativePosition-1)))},
+			{nextSide: 5, nextDirection: 'd', nextRelativePosition: (sideLength-(current.relativePosition-1))},
+			{nextSide: 5, nextDirection: 'r', nextRelativePosition: (((current.relativePosition-1)*sideLength)+1)},
+			{nextSide: 3, nextDirection: 'd', nextRelativePosition: (((sideLength*sideLength)-sideLength)+current.relativePosition)},
+			{nextSide: 1, nextDirection: 'u', nextRelativePosition: (((sideLength*sideLength)-sideLength)+current.relativePosition)}
+		]
+		
+		if(current.relativePosition > sideLength) {
+			nextPosition.position = current.relativePosition-sideLength;
+		} else {
+			let currentSideMap = sidesMap[current.side];
+			nextPosition = {
+        side: currentSideMap.nextSide,
+        position: currentSideMap.nextRelativePosition,
+        direction: currentSideMap.nextDirection
+      }
+		}
+	}
+	
+	if(current.direction.relative === "d") {
+		const sidesMap = [
+			{nextSide: 6, nextDirection: 'd', nextRelativePosition: (current.relativePosition-((sideLength*sideLength)-sideLength))},
+			{nextSide: 6, nextDirection: 'l', nextRelativePosition: ((current.relativePosition-((sideLength*sideLength)-sideLength))*sideLength)},
+			{nextSide: 6, nextDirection: 'u', nextRelativePosition: (sideLength*sideLength) - (current.relativePosition-((sideLength*sideLength)-sideLength)-1)},
+			{nextSide: 6, nextDirection: 'r', nextRelativePosition: ((((current.relativePosition)-((sideLength*sideLength)-sideLength)-1)*sideLength)+1)},
+			{nextSide: 1, nextDirection: 'd', nextRelativePosition: (current.relativePosition-((sideLength*sideLength)-sideLength))},
+			{nextSide: 5, nextDirection: 'd', nextRelativePosition: (current.relativePosition-((sideLength*sideLength)-sideLength))}
+		]
+		
+		if(current.relativePosition < ((sideLength*sideLength) - sideLength)) {
+			nextPosition.position = current.relativePosition+sideLength;
+		} else {
+			let currentSideMap = sidesMap[current.side];
+			nextPosition = {
+        side: currentSideMap.nextSide,
+        position: currentSideMap.nextRelativePosition,
+        direction: currentSideMap.nextDirection
+      }
+		}
+	}
+	
+	return nextPosition;
+}
+
+function determineNextDirection(nextPosition) {
+  const contains = arrayContains(sideStates[nextPosition.side],nextPosition.position);
+
+  if(current.direction.relative === 'r') {
+    if(contains.contains) {
+      sideStates[nextPosition.side].splice( contains.position, 1 );
+      return 'u';
+    } else {
+      sideStates[nextPosition.side].push(nextPosition.position);
+      return 'd';
+    }
+  }
+  if(current.direction.relative === 'l') {
+    if(contains.contains) {
+      sideStates[nextPosition.side].splice( contains.position, 1 );
+      return 'd';
+    } else {
+      sideStates[nextPosition.side].push(nextPosition.position);
+      return 'u';
+    }
+  }
+  if(current.direction.relative === 'u') {
+    if(contains.contains) {
+      sideStates[nextPosition.side].splice( contains.position, 1 );
+      return 'l';
+    } else {
+      sideStates[nextPosition.side].push(nextPosition.position);
+      return 'r';
+    }
+  }
+  if(current.direction.relative === 'd') {
+    if(contains.contains) {
+      sideStates[nextPosition.side].splice( contains.position, 1 );
+      return 'r';
+    } else {
+      sideStates[nextPosition.side].push(nextPosition.position);
+      return 'l';
+    }
+  }
+}
+
+function arrayContains(arr,val) {
+  for (i in arr) {
+    if (arr[i] == val) {
+      return { contains: true, position: i };
+    }
+  }
+  return { contains: false, position: -1 };
 }
