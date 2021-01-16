@@ -25915,8 +25915,8 @@
     direction: {
       relative: "l"
     },
-    relativePosition: 210,
-    side: 0
+    relativePosition: 8,
+    side: 5
   };
   var isRunning = false;
   var lastTime = 0;
@@ -25931,15 +25931,15 @@
   ];
   var numberOfSides = 6;
   var offset = 2;
-  var sideLength = 20;
+  var sideLength = 3;
   var sLsQ = sideLength * sideLength;
   var tileSize = 20;
-  var timeBetweenMoves = 100;
+  var timeBetweenMoves = 500;
   init();
   animate();
   function init() {
     camera = new PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2e4);
-    camera.position.set(-1400, 1300, 3500);
+    camera.position.set(-140, 130, 350);
     camera.lookAt(0, 0, 0);
     scene = new Scene();
     for (let z = 0; z < numberOfSides; z++) {
@@ -25999,8 +25999,8 @@
     for (i = 0; i < sides.length; i++) {
       scene.add(sides[i]);
     }
-    sides[0].setColorAt(current.relativePosition, color.setHex(3355443));
-    sideStates[0].push(current.relativePosition);
+    sides[current.side].setColorAt(current.relativePosition, color.setHex(3355443));
+    sideStates[current.side].push(current.relativePosition);
     renderer = new WebGLRenderer({antialias: true});
     renderer.setClearColor(15658734);
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -26059,15 +26059,15 @@
       position: current.relativePosition,
       direction: current.direction.relative
     };
-    console.log(nextPosition);
+    let positionUnindexed = nextPosition.position + 1;
     if (current.direction.relative === "r") {
       const sidesMap = [
-        {nextSide: 1, nextDirection: "r", nextRelativePosition: current.relativePosition - (sideLength - 1)},
-        {nextSide: 2, nextDirection: "r", nextRelativePosition: current.relativePosition - (sideLength - 1)},
-        {nextSide: 3, nextDirection: "r", nextRelativePosition: current.relativePosition - (sideLength - 1)},
-        {nextSide: 0, nextDirection: "r", nextRelativePosition: current.relativePosition - (sideLength - 1)},
-        {nextSide: 1, nextDirection: "d", nextRelativePosition: sideLength - (current.relativePosition / sideLength - 1)},
-        {nextSide: 1, nextDirection: "u", nextRelativePosition: sideLength * sideLength - (sideLength - current.relativePosition / sideLength)}
+        {nextSide: 1, nextDirection: "r", nextRelativePosition: positionUnindexed - (sideLength - 1) - 1},
+        {nextSide: 2, nextDirection: "r", nextRelativePosition: positionUnindexed - (sideLength - 1) - 1},
+        {nextSide: 3, nextDirection: "r", nextRelativePosition: positionUnindexed - (sideLength - 1) - 1},
+        {nextSide: 0, nextDirection: "r", nextRelativePosition: positionUnindexed - (sideLength - 1) - 1},
+        {nextSide: 1, nextDirection: "d", nextRelativePosition: sideLength - (positionUnindexed / sideLength - 1) - 1},
+        {nextSide: 1, nextDirection: "u", nextRelativePosition: sideLength * sideLength - (sideLength - positionUnindexed / sideLength) - 1}
       ];
       if ((current.relativePosition + 1) % sideLength !== 0) {
         nextPosition.position = current.relativePosition + 1;
@@ -26082,12 +26082,12 @@
     }
     if (current.direction.relative === "l") {
       const sidesMap = [
-        {nextSide: 3, nextDirection: "l", nextRelativePosition: current.relativePosition - 1 + sideLength},
-        {nextSide: 0, nextDirection: "l", nextRelativePosition: current.relativePosition - 1 + sideLength},
-        {nextSide: 1, nextDirection: "l", nextRelativePosition: current.relativePosition - 1 + sideLength},
-        {nextSide: 2, nextDirection: "l", nextRelativePosition: current.relativePosition - 1 + sideLength},
-        {nextSide: 3, nextDirection: "d", nextRelativePosition: (current.relativePosition - 1) / sideLength + 1},
-        {nextSide: 3, nextDirection: "u", nextRelativePosition: sideLength * sideLength - (current.relativePosition - 1) / sideLength}
+        {nextSide: 3, nextDirection: "l", nextRelativePosition: positionUnindexed - 1 + sideLength - 1},
+        {nextSide: 0, nextDirection: "l", nextRelativePosition: positionUnindexed - 1 + sideLength - 1},
+        {nextSide: 1, nextDirection: "l", nextRelativePosition: positionUnindexed - 1 + sideLength - 1},
+        {nextSide: 2, nextDirection: "l", nextRelativePosition: positionUnindexed - 1 + sideLength - 1},
+        {nextSide: 3, nextDirection: "d", nextRelativePosition: (positionUnindexed - 1) / sideLength + 1 - 1},
+        {nextSide: 3, nextDirection: "u", nextRelativePosition: sideLength * sideLength - (positionUnindexed - 1) / sideLength - 1}
       ];
       if ((current.relativePosition + 1) % sideLength !== 1) {
         nextPosition.position = current.relativePosition - 1;
@@ -26102,14 +26102,14 @@
     }
     if (current.direction.relative === "u") {
       const sidesMap = [
-        {nextSide: 4, nextDirection: "u", nextRelativePosition: sideLength * sideLength - sideLength + current.relativePosition},
-        {nextSide: 4, nextDirection: "l", nextRelativePosition: sideLength * sideLength - sideLength * (current.relativePosition - 1)},
-        {nextSide: 4, nextDirection: "d", nextRelativePosition: sideLength - (current.relativePosition - 1)},
-        {nextSide: 4, nextDirection: "r", nextRelativePosition: (current.relativePosition - 1) * sideLength + 1},
-        {nextSide: 2, nextDirection: "d", nextRelativePosition: sideLength * sideLength - sideLength + current.relativePosition},
-        {nextSide: 0, nextDirection: "u", nextRelativePosition: sideLength * sideLength - sideLength + current.relativePosition}
+        {nextSide: 4, nextDirection: "u", nextRelativePosition: sideLength * sideLength - sideLength + positionUnindexed - 1},
+        {nextSide: 4, nextDirection: "l", nextRelativePosition: sideLength * sideLength - sideLength * (positionUnindexed - 1) - 1},
+        {nextSide: 4, nextDirection: "d", nextRelativePosition: sideLength - (positionUnindexed - 1) - 1},
+        {nextSide: 4, nextDirection: "r", nextRelativePosition: (positionUnindexed - 1) * sideLength + 1 - 1},
+        {nextSide: 2, nextDirection: "d", nextRelativePosition: sideLength - (positionUnindexed - 1) - 1},
+        {nextSide: 0, nextDirection: "u", nextRelativePosition: sideLength * sideLength - sideLength + positionUnindexed - 1}
       ];
-      if (current.relativePosition > sideLength) {
+      if (current.relativePosition > sideLength - 1) {
         nextPosition.position = current.relativePosition - sideLength;
       } else {
         let currentSideMap = sidesMap[current.side];
@@ -26122,12 +26122,12 @@
     }
     if (current.direction.relative === "d") {
       const sidesMap = [
-        {nextSide: 5, nextDirection: "d", nextRelativePosition: current.relativePosition - (sideLength * sideLength - sideLength)},
-        {nextSide: 5, nextDirection: "l", nextRelativePosition: (current.relativePosition - (sideLength * sideLength - sideLength)) * sideLength},
-        {nextSide: 5, nextDirection: "u", nextRelativePosition: sideLength * sideLength - (current.relativePosition - (sideLength * sideLength - sideLength) - 1)},
-        {nextSide: 5, nextDirection: "r", nextRelativePosition: (current.relativePosition - (sideLength * sideLength - sideLength) - 1) * sideLength + 1},
-        {nextSide: 0, nextDirection: "d", nextRelativePosition: current.relativePosition - (sideLength * sideLength - sideLength)},
-        {nextSide: 4, nextDirection: "d", nextRelativePosition: current.relativePosition - (sideLength * sideLength - sideLength)}
+        {nextSide: 5, nextDirection: "d", nextRelativePosition: positionUnindexed - (sideLength * sideLength - sideLength) - 1},
+        {nextSide: 5, nextDirection: "l", nextRelativePosition: (positionUnindexed - (sideLength * sideLength - sideLength)) * sideLength - 1},
+        {nextSide: 5, nextDirection: "u", nextRelativePosition: sideLength * sideLength - (positionUnindexed - (sideLength * sideLength - sideLength) - 1) - 1},
+        {nextSide: 5, nextDirection: "r", nextRelativePosition: (sLsQ - positionUnindexed) * sideLength + 1 - 1},
+        {nextSide: 0, nextDirection: "d", nextRelativePosition: positionUnindexed - (sideLength * sideLength - sideLength) - 1},
+        {nextSide: 2, nextDirection: "d", nextRelativePosition: sLsQ - (positionUnindexed - (sLsQ - sideLength) - 1) - 1}
       ];
       if (current.relativePosition < sideLength * sideLength - sideLength) {
         nextPosition.position = current.relativePosition + sideLength;
