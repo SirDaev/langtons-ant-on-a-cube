@@ -25913,10 +25913,10 @@
   var color = new Color(14928032);
   var current = {
     direction: {
-      relative: "l"
+      relative: "r"
     },
-    relativePosition: 8,
-    side: 5
+    relativePosition: 4,
+    side: 0
   };
   var isRunning = false;
   var lastTime = 0;
@@ -25934,7 +25934,7 @@
   var sideLength = 3;
   var sLsQ = sideLength * sideLength;
   var tileSize = 20;
-  var timeBetweenMoves = 500;
+  var timeBetweenMoves = 3e3;
   init();
   animate();
   function init() {
@@ -26127,7 +26127,7 @@
         {nextSide: 5, nextDirection: "u", nextRelativePosition: sideLength * sideLength - (positionUnindexed - (sideLength * sideLength - sideLength) - 1) - 1},
         {nextSide: 5, nextDirection: "r", nextRelativePosition: (sLsQ - positionUnindexed) * sideLength + 1 - 1},
         {nextSide: 0, nextDirection: "d", nextRelativePosition: positionUnindexed - (sideLength * sideLength - sideLength) - 1},
-        {nextSide: 2, nextDirection: "d", nextRelativePosition: sLsQ - (positionUnindexed - (sLsQ - sideLength) - 1) - 1}
+        {nextSide: 2, nextDirection: "u", nextRelativePosition: sLsQ - (positionUnindexed - (sLsQ - sideLength) - 1) - 1}
       ];
       if (current.relativePosition < sideLength * sideLength - sideLength) {
         nextPosition.position = current.relativePosition + sideLength;

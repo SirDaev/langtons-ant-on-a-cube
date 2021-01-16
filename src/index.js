@@ -6,10 +6,10 @@ let camera, mesh, renderer, scene, stats;
 let color = new THREE.Color(0xE3C8A0);
 let current = {
   direction: {
-    relative: "l"
+    relative: "r"
   },
-  relativePosition: 8,
-  side: 5
+  relativePosition: 4,
+  side: 0
 };
 let isRunning = false;
 let lastTime = 0;
@@ -23,7 +23,7 @@ const offset = 2;
 const sideLength = 3;
 const sLsQ = sideLength*sideLength;
 const tileSize = 20;
-const timeBetweenMoves = 500;
+const timeBetweenMoves = 2000;
 
 init();
 animate();
@@ -201,7 +201,7 @@ function determineNextPosition() {
 		if((current.relativePosition+1) % sideLength !== 0) {
 			nextPosition.position = current.relativePosition+1;
 		} else {
-			let currentSideMap = sidesMap[current.side];
+      let currentSideMap = sidesMap[current.side];
 			
 			nextPosition = {
         side: currentSideMap.nextSide,
@@ -262,7 +262,7 @@ function determineNextPosition() {
 			{nextSide: 5, nextDirection: 'u', nextRelativePosition: (sideLength*sideLength) - (positionUnindexed-((sideLength*sideLength)-sideLength)-1) - 1},
 			{nextSide: 5, nextDirection: 'r', nextRelativePosition: (((sLsQ-positionUnindexed)*sideLength)+1) - 1},
 			{nextSide: 0, nextDirection: 'd', nextRelativePosition: (positionUnindexed-((sideLength*sideLength)-sideLength)) - 1},
-			{nextSide: 2, nextDirection: 'd', nextRelativePosition: (sLsQ-((positionUnindexed-(sLsQ-sideLength))-1)) - 1}
+			{nextSide: 2, nextDirection: 'u', nextRelativePosition: (sLsQ-((positionUnindexed-(sLsQ-sideLength))-1)) - 1}
 		]
 		
 		if(current.relativePosition < ((sideLength*sideLength) - sideLength)) {
