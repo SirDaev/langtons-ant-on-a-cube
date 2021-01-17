@@ -8,7 +8,7 @@ let current = {
   direction: {
     relative: "r"
   },
-  relativePosition: 4,
+  relativePosition: 1225,
   side: 0
 };
 let isRunning = false;
@@ -20,10 +20,10 @@ let sideStates = [
 
 const numberOfSides = 6;
 const offset = 2;
-const sideLength = 3;
+const sideLength = 50;
 const sLsQ = sideLength*sideLength;
 const tileSize = 20;
-const timeBetweenMoves = 2000;
+const timeBetweenMoves = 10;
 
 init();
 animate();
@@ -31,7 +31,7 @@ animate();
 function init() {
 
   camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, .1, 20000 );
-  camera.position.set( -140,130,350 );
+  camera.position.set( -1000,1300,2800 );
   camera.lookAt( 0, 0, 0 );
 
   scene = new THREE.Scene();
@@ -156,7 +156,6 @@ function start() {
 
 function advance() {
   let nextPosition = determineNextPosition();
-  console.log(nextPosition);
 
   // Update the current square
   if(arrayContains(sideStates[current.side],current.relativePosition).contains) {
@@ -276,14 +275,13 @@ function determineNextPosition() {
       }
 		}
 	}
-	
 	return nextPosition;
 }
 
 function determineNextDirection(nextPosition) {
   const contains = arrayContains(sideStates[nextPosition.side],nextPosition.position);
 
-  if(current.direction.relative === 'r') {
+  if(nextPosition.direction === 'r') {
     if(contains.contains) {
       sideStates[nextPosition.side].splice( contains.position, 1 );
       return 'u';
@@ -292,7 +290,7 @@ function determineNextDirection(nextPosition) {
       return 'd';
     }
   }
-  if(current.direction.relative === 'l') {
+  if(nextPosition.direction === 'l') {
     if(contains.contains) {
       sideStates[nextPosition.side].splice( contains.position, 1 );
       return 'd';
@@ -301,7 +299,7 @@ function determineNextDirection(nextPosition) {
       return 'u';
     }
   }
-  if(current.direction.relative === 'u') {
+  if(nextPosition.direction === 'u') {
     if(contains.contains) {
       sideStates[nextPosition.side].splice( contains.position, 1 );
       return 'l';
@@ -310,7 +308,7 @@ function determineNextDirection(nextPosition) {
       return 'r';
     }
   }
-  if(current.direction.relative === 'd') {
+  if(nextPosition.direction === 'd') {
     if(contains.contains) {
       sideStates[nextPosition.side].splice( contains.position, 1 );
       return 'r';

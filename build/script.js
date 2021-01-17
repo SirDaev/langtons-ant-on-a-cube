@@ -25915,7 +25915,7 @@
     direction: {
       relative: "r"
     },
-    relativePosition: 4,
+    relativePosition: 1225,
     side: 0
   };
   var isRunning = false;
@@ -25931,15 +25931,15 @@
   ];
   var numberOfSides = 6;
   var offset = 2;
-  var sideLength = 3;
+  var sideLength = 50;
   var sLsQ = sideLength * sideLength;
   var tileSize = 20;
-  var timeBetweenMoves = 3e3;
+  var timeBetweenMoves = 10;
   init();
   animate();
   function init() {
     camera = new PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2e4);
-    camera.position.set(-140, 130, 350);
+    camera.position.set(-1e3, 1300, 2800);
     camera.lookAt(0, 0, 0);
     scene = new Scene();
     for (let z = 0; z < numberOfSides; z++) {
@@ -26036,7 +26036,6 @@
   }
   function advance() {
     let nextPosition = determineNextPosition();
-    console.log(nextPosition);
     if (arrayContains(sideStates[current.side], current.relativePosition).contains) {
       sides[current.side].setColorAt(current.relativePosition, color.setHex(10385988));
     } else {
@@ -26144,7 +26143,7 @@
   }
   function determineNextDirection(nextPosition) {
     const contains = arrayContains(sideStates[nextPosition.side], nextPosition.position);
-    if (current.direction.relative === "r") {
+    if (nextPosition.direction === "r") {
       if (contains.contains) {
         sideStates[nextPosition.side].splice(contains.position, 1);
         return "u";
@@ -26153,7 +26152,7 @@
         return "d";
       }
     }
-    if (current.direction.relative === "l") {
+    if (nextPosition.direction === "l") {
       if (contains.contains) {
         sideStates[nextPosition.side].splice(contains.position, 1);
         return "d";
@@ -26162,7 +26161,7 @@
         return "u";
       }
     }
-    if (current.direction.relative === "u") {
+    if (nextPosition.direction === "u") {
       if (contains.contains) {
         sideStates[nextPosition.side].splice(contains.position, 1);
         return "l";
@@ -26171,7 +26170,7 @@
         return "r";
       }
     }
-    if (current.direction.relative === "d") {
+    if (nextPosition.direction === "d") {
       if (contains.contains) {
         sideStates[nextPosition.side].splice(contains.position, 1);
         return "r";
