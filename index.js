@@ -105,7 +105,7 @@ function init() {
   }
 
   // Add 6 sides to the scene
-  for(i=0; i<sides.length; i++) {
+  for(let i=0; i<sides.length; i++) {
     scene.add(sides[i]);
   }
 

@@ -4,13 +4,16 @@
   "description": "Langton's Ant on a Cube",
   "main": "index.js",
   "scripts": {
-    "build": "node ./scripts/build/build.js",
+    "start": "snowpack dev",
+    "build": "snowpack build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "esbuild": "^0.8.32",
     "three": "^0.124.0"
+  },
+  "devDependencies": {
+    "snowpack": "^3.0.11"
   }
 }
