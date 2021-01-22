@@ -5,11 +5,12 @@
 module.exports = {
   exclude: [
     "snowpack.config.js",
+    ".git/**",
     ".gitignore",
     "package-lock.json",
     "package.json",
     "README.md",
-    "resources/*"
+    "resources/**"
   ],
   mount: {
     /* ... */
