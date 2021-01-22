@@ -320,7 +320,7 @@ function determineNextDirection(nextPosition) {
 }
 
 function arrayContains(arr,val) {
-  for (i in arr) {
+  for (let i in arr) {
     if (arr[i] == val) {
       return { contains: true, position: i };
     }
