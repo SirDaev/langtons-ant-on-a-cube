@@ -17,6 +17,16 @@ let sides = [];
 let sideStates = [
   [],[],[],[],[],[]
 ];
+let cLookAt = {
+  x: 0,
+  y: 0,
+  z: 0
+};
+let cStartPosition = {
+  x: -1000,
+  y: 1300,
+  z: 2800
+}
 
 const numberOfSides = 6;
 const offset = 2;
@@ -31,8 +41,8 @@ animate();
 function init() {
 
   camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, .1, 20000 );
-  camera.position.set( -1000,1300,2800 );
-  camera.lookAt( 0, 0, 0 );
+  camera.position.set( cStartPosition.x, cStartPosition.y, cStartPosition.z );
+  camera.lookAt( cLookAt.x, cLookAt.y, cLookAt.z );
 
   scene = new THREE.Scene();
 
