@@ -135,7 +135,7 @@ function init() {
   document.body.appendChild( stats.dom );
   window.addEventListener( 'resize', onWindowResize, false );
 
-  document.getElementById("start-button").addEventListener('click', start, false);
+  document.getElementById("start-button").addEventListener('click', toggleStart, false);
 }
 
 function onWindowResize() {
@@ -160,7 +160,15 @@ function render() {
   stats.update();
 }
 
-function start() {
+function toggleStart() {
+  const startButton = document.getElementById("start-button");
+  
+  if (startButton.innerText === "Start") {
+    startButton.innerText = "Pause";
+  } else {
+    startButton.innerText = "Start";
+  }
+
   isRunning = !isRunning;
 }
 
