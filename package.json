@@ -12,14 +12,14 @@
   "license": "ISC",
   "dependencies": {
     "@babel/polyfill": "^7.12.1",
-    "three": "^0.124.0"
+    "three": "^0.136.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.12.10",
-    "@babel/core": "^7.12.10",
-    "@babel/preset-env": "^7.12.11",
-    "@snowpack/plugin-babel": "^2.1.6",
-    "snowpack": "^3.0.11"
+    "@babel/cli": "^7.19.3",
+    "@babel/core": "^7.19.6",
+    "@babel/preset-env": "^7.19.4",
+    "@snowpack/plugin-babel": "^2.1.7",
+    "snowpack": "^3.8.8"
   },
   "babel": {
     "presets": [
